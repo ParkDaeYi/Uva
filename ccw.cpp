@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 using namespace std;
 
 struct point {
@@ -9,6 +10,9 @@ struct point {
 	bool operator<(const point& p) const {
 		if (1LL * dy * p.dx != 1LL * dx * p.dy) return 1LL * dy * p.dx < 1LL * dx * p.dy;
 		return y == p.y ? x < p.x : y < p.y;
+	}
+	point operator-(point& p) {
+		return point(x - p.x, y - p.y);
 	}
 };
 
@@ -123,4 +127,21 @@ double area(vector<point> p) {
 		ret += ccw(p[0], p[i], p[i + 1]);
 	}
 	return ret / 2;
+}
+
+int dist(point a, point b) {
+	int dx = a.x - b.x, dy = a.y - b.y;
+	return dx * dx + dy * dy;
+}
+
+double rotatingCalipers(vector<point> p) {
+	int ret = 0, sz = p.size();
+	for (int i = 0, j = 1; i < sz; ++i) {
+		//구간의 양 끝이 [A,B]라고 가정한다면
+		//A번째 점과 A+1번째 점을 잇는 선분과 B번째 점과 B+1번째 점을 잇는 선분의
+		//외적을 계산, https://degurii.tistory.com/47
+		while (j + 1 < sz && ccw(point(0, 0), p[i + 1] - p[i], p[j + 1] - p[j]) >= 0) ret = max(ret, dist(p[i], p[j++]));
+		ret = max(ret, dist(p[i], p[j]));
+	}
+	return sqrt(ret);
 }
