@@ -15,7 +15,8 @@ int main() {
    cin.tie(0); cout.tie(0);
    freopen("rectangles.inp", "r", stdin);
    freopen("rectangles.out", "w", stdout);
-
+   
+   // m, n은 자연수이고, m > n 이며, 둘 중 하나는 짝수, 하나는 홀수이다.
    int i, j, sum = 0;
    for (i = 2; i <= 600; ++i) {
       for (int j = 1; j < i; ++j) {
@@ -41,3 +42,12 @@ int main() {
 
    return 0;
 }
+
+// (a, b, c) 가 원시 피타고라스 수일 필요충분조건
+// - (m^2 - n^2, 2mn, m^2 + n^2) => (a, b, c) : c는 대각
+// - m, n은 자연수이고, m > n 이며, 둘 중 하나는 짝수, 하나는 홀수이다.
+// 따름 정리
+// 1. a, c는 항상 홀수이고 b는 4의 배수이다.
+// 2. a 또는 b 중 적어도 하나는 3의 배수이다.
+// 3. a, b, c 중 적어도 하나는 5의 배수이다.
+// 4. ab는 12의 배수이고 abc는 60의 배수이다.
