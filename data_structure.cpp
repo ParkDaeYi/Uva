@@ -8,21 +8,21 @@ int n;
 vector<int> adj[26];
 
 // 이진 트리(feat. 트리 순회)
-void preorder(int itr) {	// 전위 순회
+void preorder(int itr) {	// 전위 순회 (루트 -> 왼쪽 -> 오른쪽)
 	if (itr == -1) return;
 	cout << (char)('A' + itr);
 	preorder(adj[itr][0]);
 	preorder(adj[itr][1]);
 }
 
-void inorder(int itr) {	// 중위 순회
+void inorder(int itr) {	// 중위 순회 (왼쪽 -> 루트 -> 오른쪽)
 	if (itr == -1) return;
 	inorder(adj[itr][0]);
 	cout << (char)('A' + itr);
 	inorder(adj[itr][1]);
 }
 
-void postorder(int itr) {	// 후위 순회
+void postorder(int itr) {	// 후위 순회 (왼쪽 -> 오른쪽 -> 루트)
 	if (itr == -1) return;
 	postorder(adj[itr][0]);
 	postorder(adj[itr][1]);
