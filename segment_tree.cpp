@@ -55,6 +55,66 @@ int query(int seg[], int node, int start, int end, int left, int right) {
 	return query(seg, node * 2, start, mid, left, right) + query(seg, node * 2 + 1, mid + 1, end, left, right);
 }
 
+// Lazy Propagation (느리게 갱신돠는 세그먼트 트리) (feat. 구간 합 구하기 2)
+typedef long long int llt;
+
+int n, m, k;
+llt seg[1 << 21], lazy[1 << 21];
+
+void update_lazy(int node, int start, int end) {
+	if (!lazy[node]) return;	// lazy가 비었을 경우 ==> 갱신할게 없음
+	seg[node] += (end - start + 1) * lazy[node];
+	if (start != end) {	// 단말노드가 아닐 경우
+		lazy[node * 2] += lazy[node];
+		lazy[node * 2 + 1] += lazy[node];
+	}
+	lazy[node] = 0;	// lazy 값을 사용하였으니 0으로 변환
+}
+
+void update_range(int node, int start, int end, int left, int right, llt val) {
+	update_lazy(node, start, end);	// 항시 체크
+	if (end < left || right < start) return;
+	if (left <= start && end <= right) {
+		seg[node] += (end - start + 1) * val;	// 구간 합이므로 현재 node에 바꿔야하는 값을 더함
+		if (start != end) {	// 단말노드가 아닐 경우 현재 node의 밑에 있는 node들도 나중에 갱신해야 함
+			lazy[node * 2] += val;
+			lazy[node * 2 + 1] += val;
+		}
+		return;
+	}
+	int mid = (start + end) >> 1;
+	update_range(node * 2, start, mid, left, right, val);
+	update_range(node * 2 + 1, mid + 1, end, left, right, val);
+	seg[node] = seg[node * 2] + seg[node * 2 + 1];
+}
+
+llt query(int node, int start, int end, int left, int right) {
+	update_lazy(node, start, end);	// 항시 체크
+	if (left <= start && end <= right) return seg[node];
+	if (end < left || right < start) return 0;
+	int mid = (start + end) >> 1;
+	return query(node * 2, start, mid, left, right) + query(node * 2 + 1, mid + 1, end, left, right);
+}
+
+void solve() {
+
+	cin >> n >> m >> k;
+	const int sz = pow(2, (int)log2(n - 1) + 1);
+	for (int i = 0; i < n; ++i) cin >> seg[sz + i];
+	for (int i = sz - 1; i > 0; --i) seg[i] = seg[i * 2] + seg[i * 2 + 1];
+	m += k;
+	int a, b, c, d;
+	while (m--) {
+		cin >> a >> b >> c;
+		if (a == 1) {
+			cin >> d;
+			update_range(1, 1, sz, b, c, d);
+		}
+		else cout << query(1, 1, sz, b, c) << '\n';
+	}
+
+}
+
 // 세그먼트 트리 기반 라인스위핑 (feat. 화성지도)
 struct point {
 	int x, y1, y2, v;
