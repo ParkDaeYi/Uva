@@ -66,6 +66,7 @@ void nCk_Inverse() {
 // 오일러가 "(n + 2) 각형을 n개의 삼각형으로 나눌 수 있는 경우의 수"를
 // 세는 문제를 제안하면서 처음 나타남
 // 점화식: Cn ==> (2n)! / n! * (n + 1)!
+// Cn+1 ==> (2 * (2n + 1) / (n + 2)) * Cn
 #define MOD 987654321
 typedef long long int llt;
 
