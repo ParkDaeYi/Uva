@@ -72,9 +72,9 @@ typedef long long int llt;
 
 llt d[5001] = { 1 };
 
-llt Catalan_Number(int n) {
+llt Catalan_Number_1(int n) {
 	// 카탈란 수 0~10
-	// 1, 1, 2, 5, 14, 43, 132, 429, 1430, 4862, ....
+	// 1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, ....
 
 	for (int i = 1; i < n + 1; ++i) {
 		for (int j = 0; j < i; ++j) {
@@ -83,6 +83,19 @@ llt Catalan_Number(int n) {
 		}
 		d[i] %= MOD;
 	}
+	return d[n];
+}
+
+llt Catalan_Number_2(int n) {
+	// Cn+1 ==> (2 * (2n + 1) / (n + 2)) * Cn 을 구현하면
+	// 밑과 같이 구현할 순 있지만
+	// 카탈란 수는 급격하게 커지기 때문에 이렇게 구현할 경우
+	// 올바른 답을 구할 수 없음
+	
+	for (int i = 1; i < n; i++) {
+		d[i + 1] = (((2 * d[i]) % MOD * (2 * i + 1)) % MOD / (i + 2)) % MOD;
+	}
+
 	return d[n];
 }
 
