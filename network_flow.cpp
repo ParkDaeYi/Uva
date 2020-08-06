@@ -6,12 +6,27 @@
 #define INF 1e9
 using namespace std;
 
-// feat. 최대 유량
-// 네트워크 플로우
+// 네트워크 플로우 (feat. 최대 유량)	O(V * E^2)
+// ==> 그래프에서 각 노드들 간의 용량(Capacity)이 정의되어 있을 시,
+//		시작점(source)에서 끝점(target)까지 흐를 수 있는 최대 유량을 구함.
+// - 소스(S, source) : 시작점
+// - 싱크(T, sink) : 끝점
+// - 정점(Vertex) : 유량이 모이는 위치
+// - 간선(Edge) : 유량이 흐르는 파이프 역할
+// - 용량(Capacity) : 유량이 흐를 수 있는 크기
+// - 유량(Flow) : 간선에 흐르는 현재 유량의 크기
+// - 잔류 유량(Residual Flow) : Capacity-Flow로써 현재 간선에 흐를 수 있는
+//								유량이 얼마인지를 나타냄
 int n, ans;
 int c[VERTEX][VERTEX];	// c[i][j]: i에서 j로 가는 간선의 용량
 int f[VERTEX][VERTEX];	// f[i][j]: i에서 j로 현재 흐르는 유량
 vector<int> adj[VERTEX];	// 인접 리스트
+
+// 1. 특정 경로를 따라 유량을 보낼 때는 그 경로에 포함된 간선 중
+//	가장 용량이 작은 간선에 의해 결정 됨.
+// 2. 용량 제한 속성 : f(u,v) <= c(u,v)
+// 3. 유량의 대칭성 : f(u,v) = -f(v,u) (핵심!)
+// 4. 나오는 유량과 들어오는 유량의 합은 항상 같아야 한다.
 
 inline int ctoi(char x) {
 	if (x <= 'Z') return x - 'A';
@@ -63,7 +78,15 @@ int _solve() {
 	return ans;
 }
 
-// 디닉
+// 디닉		O(V^2 * E)
+// 1. 레벨 그래프 (Level Graph)
+//	- 모든 정점에 대해 레벨을 매겨 놓은 그래프
+//	- Source가 되는 정점은 레벨이 0이고,
+//	 소스와 인접한 정점들의 레벨은 1, 레벨 1 정점과 인접한 정점들은 레벨 2....
+//	 마지막 Sink의 레벨은 n 이 된다.
+// 2. 차단 유량 (Blocking Flow)
+//  - 레벨 그래프를 형성할 때
+//   레벨 그래프를 형성하는  조건에 맞지 않는 간선들을 제외한 것들을 의미함.
 int n, c[VERTEX][VERTEX], f[VERTEX][VERTEX], ans;
 int level[VERTEX];	// 레벨 그래프에서 각 정점의 레벨을 저장 (S는 0)
 int work[VERTEX];	// DFS 중 해당 정점이 몇 번째 간선까지 탐색했는지 기억하는 용도
@@ -75,6 +98,8 @@ int ctoi(char c) {
 }
 
 // 디닉 전용 BFS 함수
+// 우선적으로 BFS를 이용하여 잔여용량이 0 이상인 간선에 대하여
+// 레벨 그래프를 만들어 준다.
 bool bfs(int S,int E) {
 	// 레벨 값 초기화
 	fill(level, level + VERTEX, -1);
@@ -97,6 +122,10 @@ bool bfs(int S,int E) {
 }
 
 // 디닉 전용 DFS 함수, cur에서 dest까지 최대 flow만큼 유량을 보냄
+// DFS 함수는 차단 유량이라는 개념을 이용한다.
+// 레벨 그래프에서의 차이가 딱 1만큼 클 때만 유량을 흘려줄 수 있다.
+// 더 이상 흘릴 수 있는 유량이 없을 때까지 탐색한다.
+// 차단 유량만큼 간선의 용량을 줄여주고 역방향 간선에 차단 유량만큼 용량을 확장시켜 주면 된다.
 int dfs(int cur, int dest, int flow) {
 	if (cur == dest) return flow;
 
