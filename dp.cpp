@@ -28,7 +28,7 @@ void LCS(string str1, string str2) {
 	// 최장 공통 부분 수열과 그 길이를 구할 수 있다.
 	// (현재 인덱스 번호에서 같은 문자를 만났을 경우
 	// 대각에 있는 값 + 1을 해줌, dp[i][j] = dp[i - 1][j - 1] + 1
-	// 그 외의 경우는 위 아래 중 큰 수를 채택하면 됨)
+	// 그 외의 경우는 위  중 큰 수를 채택하면 됨)
 	for (int i = 1;i <= str1.length();++i) {
 		for (int j = 1;j <= str2.length();++j) {
 			if (str1[i - 1] == str2[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
