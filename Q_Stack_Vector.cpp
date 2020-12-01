@@ -124,7 +124,7 @@ public:
         delete[] vc;
         vc = new T[cap];
     }
-    T& operator [](T i) {
+    T& operator [](int i) {
         return vc[i];
     }
 };
