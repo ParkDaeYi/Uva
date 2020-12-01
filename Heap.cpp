@@ -13,7 +13,7 @@ private:
 	void swap(T& a, T& b) { T tmp = a; a = b; b = tmp; }
 public:
 	Heap() {
-		heap = new T[M];
+		heap = new T[];
 		sz = 0;
 	}
 	int size() {
