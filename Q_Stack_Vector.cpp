@@ -86,13 +86,13 @@ private:
     T* vc;
 public:
     vector() {
-        cap = 8, sz = 0;
+        cap = 1, sz = 0;
         vc = new T[cap];
     }
     ~vector() {
         delete[] vc;
     }
-    void push_back(int val) {
+    void push_back(T val) {
         if (cap == sz) {
             cap *= 2;
             T* tmp = new T[cap];
@@ -100,9 +100,17 @@ public:
                 tmp[i] = vc[i];
             }
             delete[] vc;
+            
             vc = tmp;
         }
         vc[sz++] = val;
+    }
+    void pop_back() {
+        if (!sz) return;
+        vc[--sz] = NULL;
+    }
+    T back() {
+        return vc[sz - 1];
     }
     int size() {
         return sz;
@@ -111,7 +119,10 @@ public:
         return !sz;
     }
     void clear() {
+        cap = 1;
         sz = 0;
+        delete[] vc;
+        vc = new T[cap];
     }
     T& operator [](T i) {
         return vc[i];
