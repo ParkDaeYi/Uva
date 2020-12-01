@@ -6,54 +6,48 @@
 #define ARRAY_SIZE 10
 using namespace std;
 
-void swap(int& a, int& b) { int tmp = a; a = b; b = tmp; }
-
-// Max Heap
-class Heap {
+template<class T> class Heap {
 private:
-	int heap[HEAP_SIZE];
-	int heap_size;
+	T* heap;
+	int sz;
+	void swap(T& a, T& b) { T tmp = a; a = b; b = tmp; }
 public:
-	Heap() {		
-		fill(heap, heap + HEAP_SIZE, 0);
-		heap_size = 0;
+	Heap() {
+		heap = new T[M];
+		sz = 0;
 	}
 	int size() {
-		return heap_size;
+		return sz;
 	}
-	void push(int v) {
-		// 힙의 가장 끝에 데이터 추가
-		heap[++heap_size] = v;
-		// child를 parent와 비교하면서 알맞은 위치로 하나씩 올림
-		int child = heap_size;
-		int parent = child / 2;
+	bool empty() {
+		return !sz;
+	}
+	void push(T v) {
+		heap[++sz] = v;
+		int child = sz;
+		int parent = sz / 2;
 		while (child > 1 && heap[parent] < heap[child]) {
 			swap(heap[parent], heap[child]);
 			child = parent;
-			parent = child / 2;
+			parent /= 2;
 		}
 	}
-	int top() {
+	T top() {
 		return heap[1];
 	}
 	void pop() {
-		// 첫번째 원소를 힙의 가장 끝에 원소와 바꿈
-		swap(heap[1], heap[heap_size]);
-		// 가장 끝은 이제 쓰지 않으므로 --
-		heap_size--;
-
-		// child를 parent와 비교하면서 알맞은 위치로 하나씩 내림
+		swap(heap[1], heap[sz--]);
 		int parent = 1;
 		int child = parent * 2;
-		if (child + 1 <= heap_size) {
-			child = (heap[child] > heap[child + 1]) ? child : child + 1;
+		if (child + 1 <= sz) {
+			child = heap[child] > heap[child + 1] ? child : child + 1;
 		}
-		while (child <= heap_size && heap[parent] < heap[child]) {
+		while (child <= sz && heap[parent] < heap[child]) {
 			swap(heap[parent], heap[child]);
 			parent = child;
 			child *= 2;
-			if (child + 1 <= heap_size) {
-				child = (heap[child] > heap[child + 1]) ? child : child + 1;
+			if (child + 1 <= sz) {
+				child = heap[child] > heap[child + 1] ? child : child + 1;
 			}
 		}
 	}
@@ -65,7 +59,7 @@ int main() {
 	// 랜덤함수를 위한 srand와 seed
 	srand(time(NULL));
 
-	Heap pq;
+	Heap<int> pq;
 	// 배열 초기화
 	for (int i = 0; i < ARRAY_SIZE; i++) {
 		// 1 ~ 50까지의 난수 생성
